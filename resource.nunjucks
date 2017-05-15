@@ -1,0 +1,335 @@
+{% if (resource.methods or (resource.description and resource.parentUrl)) %}
+  <div class="resource">
+
+    {% for method in resource.methods %}
+      <div id="{{ resource.uniqueId }}_{{ method.method }}">
+
+        <h3>
+          {% if method.displayName %}
+          {{ method.displayName }}
+          {% else %}
+          {{ method.method | upper }}
+          {{ resource.parentUrl }}{{ resource.relativeUri }}
+          {% endif %}
+        </h3>
+
+        {% if method.description %}
+          <div class="description">
+{% markdown %}
+{{ method.description}}
+{% endmarkdown %}
+          </div>
+        {% endif %}
+
+        {% if method.securedBy.length %}
+          {% for securedBy in method.securedBy %}
+            {% if securedBy %}
+              <div class="description">
+                {% set securityScheme = securitySchemes[securedBy.schemeName] %}
+                <span class="glyphicon glyphicon-lock" title="Authentication required"></span>
+                Secured by <b>{{securityScheme.displayName}}</b>
+                {% if securedBy.scopes %}
+                  with scopes:
+                  <ul>
+                    {% for scope in securedBy.scopes %}
+                      <li>{{scope}}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+                {% if securityScheme.description %}
+{% markdown %}
+{{ securityScheme.description }}
+{% endmarkdown %}
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+
+        <!--
+
+        {% if method.allUriParameters.length or method.queryString or method.queryParameters or method.headers or method.body %}
+          <div>
+            <a href="#{{ resource.uniqueId }}_{{ method.method }}_request" data-toggle="tab">Request</a>
+          </div>
+        {% endif %}
+
+        {% if method.responses %}
+          <div>
+            <a href="#{{ resource.uniqueId }}_{{ method.method }}_response" data-toggle="tab">Response</a>
+          </div>
+        {% endif %}
+
+        {% if method.securedBy.length %}
+          <div>
+            <a href="#{{ resource.uniqueId }}_{{ method.method }}_securedby" data-toggle="tab">Security</a>
+          </div>
+        {% endif %}
+
+        -->
+
+        <!-- <h4>Request</h4> -->
+
+        <code>
+          <pre>{{ method.method | upper }} {{ resource.parentUrl }}{{ resource.relativeUri }}</pre>
+        </code>
+
+        <!-- Tab panes -->
+        
+        <div>
+          {% if method.allUriParameters.length or method.queryString or method.queryParameters or method.headers or method.body %}
+            <div id="{{ resource.uniqueId }}_{{ method.method }}_request">
+              {% if resource.allUriParameters.length %}
+                <h5>URI Parameters</h5>
+                <ul>
+                  {% for item in resource.allUriParameters %}
+                    {% include "./item.nunjucks" %}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+
+              {% if method.annotations.length %}
+                <h5>Annotations</h5>
+                <ul>
+                  {% for item in method.annotations %}
+                    {% include "./item.nunjucks" %}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+
+              {% if method.headers.length %}
+                <h5>Headers</h5>
+                <ul>
+                  {% for item in method.headers %}
+                    {% include "./item.nunjucks" %}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+
+              {% if method.queryString and method.queryString.properties.length %}
+                <h5>Query String</h5>
+                <ul>
+                  {% for item in method.queryString.properties %}
+                    {% include "./item.nunjucks" %}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+
+              {% if method.queryParameters.length %}
+                <h5>Query Parameters</h5>
+                <ul>
+                  {% for item in method.queryParameters %}
+                    {% include "./item.nunjucks" %}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+
+              {% if method.body %}
+                <h5><a href="#" onclick="$('#{{ resource.uniqueId }}_{{ method.method }}_request_body').toggle(); return false">Body</a></h5>
+                <div class="resource-body" id="{{ resource.uniqueId }}_{{ method.method }}_request_body">
+                {% for b in method.body %}
+                  <p><strong>Media type</strong>: {{ b.key }}</p>
+
+                  {% if b.type %}
+                    {% if isStandardType(b.type) %}
+                      {% if b.type === 'array' and b.items %}
+                        <p><strong>Type</strong>: array of {% if isStandardType(b.items) %}{{ b.items }}{% else %}{{ b.items.displayName }}{% endif %}</p>
+                      {% else %}
+                        <p><strong>Type</strong>: {{ b.type }}</p>
+                      {% endif %}
+                    {% else %}
+                      <p><strong>Type</strong>:</p>
+                      <pre><code>{{ b.type | escape }}</code></pre>
+                    {% endif %}
+                  {% endif %}
+
+                  {% if b.content %}
+                    <p><strong>Content</strong>:</p>
+                    <pre><code>{{ b.content | escape }}</code></pre>
+                  {% endif %}
+
+                  {% if b.items and b.items.properties %}
+                    {% if isStandardType(b.items) %}
+                      <p><strong>Items</strong>: {{ b.items }}</p>
+                    {% endif %}
+
+                    {% if not isStandardType(b.items) %}
+                      <p><strong>Items</strong>: {{ b.items.displayName }}</p>
+
+                      {% if b.items.properties or b.items.examples.length %}
+                        <div class="items">
+                          {% if b.items.properties %}
+                            <ul>
+                              {% for item in b.items.properties %}
+                                {% include "./item.nunjucks" %}
+                              {% endfor %}
+                            </ul>
+                          {% endif %}
+
+                          {# Request - Array item examples #}
+                          {% set parent = b.items %}
+                          {% include "./examples.nunjucks" %}
+                        </div>
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+
+                  {% if b.properties.length %}
+                    <p><strong>Properties:</strong></p>
+                    <div>
+                      <ul>
+                        {% for item in b.properties %}
+                          {% include "./item.nunjucks" %}
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  {% endif %}
+
+                  {# Request - Body examples #}
+                  {% set parent = b %}
+                  {% include "./examples.nunjucks" %}
+                {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          {% if method.responses %}
+            <div id="{{ resource.uniqueId }}_{{ method.method }}_response">
+              {% for response in method.responses %}
+                <h4>Response {{ response.code }}</h4>
+{% markdown %}
+{{ response.description }}
+{% endmarkdown %}
+
+                {% if response.headers.length %}
+                  <h5>Headers</h5>
+                  <ul>
+                    {% for item in response.headers %}
+                      {% include "./item.nunjucks" %}
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+
+                {% if response.body.length %}
+                  <h5><a href="#" onclick="$('#{{ resource.uniqueId }}_{{ method.method }}_response_body').toggle(); return false">Body</a></h5>
+                  <div class="resource-body" id="{{ resource.uniqueId }}_{{ method.method }}_response_body">
+                  {% for b in response.body %}
+                    <p><strong>Media type</strong>: {{ b.key }}</p>
+
+                    {% if b.type %}
+                      {% if isStandardType(b.type) %}
+                        {% if b.type === 'array' and b.items %}
+                          <p><strong>Type</strong>: array of {% if isStandardType(b.items) %}{{ b.items }}{% else %}{{ b.items.displayName }}{% endif %}</p>
+                        {% else %}
+                          <p><strong>Type</strong>: {{ b.type }}</p>
+                        {% endif %}
+                      {% else %}
+                        <p><strong>Type</strong>:</p>
+                        <pre><code>{{ b.type | escape }}</code></pre>
+                      {% endif %}
+                    {% endif %}
+
+                    {% if b.content %}
+                      <p><strong>Content</strong>:</p>
+                      <pre><code>{{ b.content | escape }}</code></pre>
+                    {% endif %}
+
+                    {% if b.items and b.items.properties %}
+                      {% if isStandardType(b.items) %}
+                        <p><strong>Items</strong>: {{ b.items }}</p>
+                      {% endif %}
+
+                      {% if not isStandardType(b.items) %}
+                        <p><strong>Items</strong>: {{ b.items.displayName }}</p>
+
+                        {% if b.items.properties or b.items.examples.length %}
+                          <div class="items">
+                            {% if b.items.properties %}
+                              <ul>
+                                {% for item in b.items.properties %}
+                                  {% include "./item.nunjucks" %}
+                                {% endfor %}
+                              </ul>
+                            {% endif %}
+
+                            {# Response - Array item examples #}
+                            {% set parent = b.items.examples %}
+                            {% include "./examples.nunjucks" %}
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                    {% endif %}
+
+                    {% if b.properties.length %}
+                      <p><strong>Properties:</strong></p>
+                      <ul>
+                        {% for item in b.properties %}
+                          {% include "./item.nunjucks" %}
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+
+                    {# Response - Body examples #}
+                    {% set parent = b %}
+                    {% include "./examples.nunjucks" %}
+                  {% endfor %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+      <!--
+          {% if method.securedBy.length %}
+            <div id="{{ resource.uniqueId }}_{{ method.method }}_securedby">
+              {% for securedBy in method.securedBy %}
+                {% set securityScheme = securitySchemes[securedBy.schemeName] %}
+                <h4>Secured by {{ securityScheme.displayName }}</h4>
+
+                {% if securityScheme.describedBy.headers.length %}
+                  <h5>Headers</h5>
+                  <ul>
+                    {% for item in securityScheme.describedBy.headers %}
+                      {% include "./item.nunjucks" %}
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+
+                {% if securityScheme.describedBy.queryParameters.length %}
+                  <h5>Query Parameters</h5>
+                  <ul>
+                    {% for item in securityScheme.describedBy.queryParameters %}
+                      {% include "./item.nunjucks" %}
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+
+                {% for response in securityScheme.describedBy.responses.length %}
+                  <h4>Response {{ response.code }}</h4>
+{% markdown %}
+{{ response.description }}
+{% endmarkdown %}
+                  {% if response.headers.length %}
+                    <h5>Headers</h5>
+                    <ul>
+                      {% for item in response.headers %}
+                        {% include "./item.nunjucks" %}
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                {% endfor %}
+
+              {% endfor %}
+            </div>
+          {% endif %}
+          -->
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% for resource in resource.resources %}
+  {% include "./resource.nunjucks" %}
+{% endfor %}

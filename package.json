@@ -1,0 +1,32 @@
+{
+  "name": "raml2html-plain-theme",
+  "description": "The plain theme for raml2html",
+  "version": "0.1.0",
+  "scripts": {
+    "render": "node ./render-all-examples.js"
+  },
+  "devDependencies": {
+    "glob": "7.1.x",
+    "raml2html": "^6.3.0"
+  },
+  "keywords": [
+    "RAML",
+    "raml2html",
+    "raml2html-theme"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/a7b0/raml2html-plain-theme.git"
+  },
+  "license": "MIT",
+  "preferGlobal": true,
+  "files": [
+    "index.nunjucks",
+    "resource.nunjucks",
+    "item.nunjucks",
+    "examples.nunjucks"
+  ],
+  "engines": {
+    "node": ">=4"
+  }
+}
