@@ -47,8 +47,6 @@
     {% endif %}
 
     {% if not isStandardType(item.items) %}
-      <p><strong>Items</strong>: {{ item.items.displayName }}</p>
-
       {% if item.items.properties or item.items.examples.length %}
         <div class="items">
           {% if item.items.properties %}
@@ -58,7 +56,6 @@
               {% endfor %}
             </ul>
           {% endif %}
-
           {# Sub-item Examples #}
           {% set parent = item.items %}
           {% include "./examples.nunjucks" %}
@@ -67,16 +64,11 @@
     {% endif %}
   {% endif %}
 
-  {% if item.properties %}
+  {% if item.properties or item.type.properties %}
     <ul>
       {% for item in item.properties %}
         {% include "./item.nunjucks" %}
       {% endfor %}
-    </ul>
-  {% endif %}
-
-  {% if item.type.properties %}
-    <ul>
       {% for item in item.type.properties %}
         {% include "./item.nunjucks" %}
       {% endfor %}

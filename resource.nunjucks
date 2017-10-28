@@ -135,7 +135,9 @@
                       {% if b.type === 'array' and b.items %}
                         <p><strong>Type</strong>: array of {% if isStandardType(b.items) %}{{ b.items }}{% else %}{{ b.items.displayName }}{% endif %}</p>
                       {% else %}
-                        <p><strong>Type</strong>: {{ b.type }}</p>
+                        {% if b.type !== 'object' or not b.properties %}
+                          <p><strong>Type</strong>: {{ b.type }}</p>
+                        {% endif %}
                       {% endif %}
                     {% else %}
                       <p><strong>Type</strong>:</p>
@@ -222,7 +224,9 @@
                         {% if b.type === 'array' and b.items %}
                           <p><strong>Type</strong>: array of {% if isStandardType(b.items) %}{{ b.items }}{% else %}{{ b.items.displayName }}{% endif %}</p>
                         {% else %}
-                          <p><strong>Type</strong>: {{ b.type }}</p>
+                          {% if b.type !== 'object' or not b.properties %}
+                            <p><strong>Type</strong>: {{ b.type }}</p>
+                          {% endif %}
                         {% endif %}
                       {% else %}
                         <p><strong>Type</strong>:</p>
