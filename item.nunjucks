@@ -15,7 +15,11 @@
         {%- if item.type === 'array' -%}
           array of {% if isStandardType(item.items) %}{{ item.items }}{% else %}{{ item.items.displayName }}{% endif %}
         {%- else -%}
-          {{ item.type }}
+          {%- if isStandardType(item.type) -%}
+            {{ item.type }}
+          {%- else -%}
+            {{ item.type.displayName }}
+          {%- endif -%}
         {%- endif -%}
       {%- endif -%}
 
@@ -66,6 +70,14 @@
   {% if item.properties %}
     <ul>
       {% for item in item.properties %}
+        {% include "./item.nunjucks" %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if item.type.properties %}
+    <ul>
+      {% for item in item.type.properties %}
         {% include "./item.nunjucks" %}
       {% endfor %}
     </ul>
