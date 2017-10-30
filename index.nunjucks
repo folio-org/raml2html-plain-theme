@@ -85,6 +85,30 @@
     border-bottom: 1px dashed #428bca;
   }
 
+  table {
+    margin-bottom: 20px;
+  }
+
+  table th,
+  table td {
+    padding: 8px;
+    line-height: 20px;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+  }
+
+  table th {
+    font-weight: bold;
+  }
+
+  table thead th {
+    vertical-align: bottom;
+  }
+
+  table thead:first-child tr:first-child th {
+    border-top: 0;
+  }
+
   strong {
     font-weight: bold;
   }
@@ -169,6 +193,9 @@
       <p>Resources</p>
       -->
       <ul>
+        {% for chapter in documentation %}
+        <li><a href="#{{ chapter.uniqueId }}">{{ chapter.title }}</a></li>
+        {% endfor %}
         {% for resource in resources %}
         <li><a href="#{{ resource.uniqueId}}">{% if resource.displayName %}{{ resource.displayName }}{% else %}{{ resource.relativeUri }}{% endif %}</a></li>
         {% endfor %}
