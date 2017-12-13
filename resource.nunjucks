@@ -214,8 +214,8 @@
                 {% endif %}
 
                 {% if response.body.length %}
-                  <h5><a href="#" onclick="$('#{{ resource.uniqueId }}_{{ method.method }}_response_body').toggle(); return false">Body</a></h5>
-                  <div class="resource-body" id="{{ resource.uniqueId }}_{{ method.method }}_response_body">
+                  <h5><a href="#" onclick="$('#{{ resource.uniqueId }}_{{ method.method }}_response_{{ response.code }}_body').toggle(); return false">Body</a></h5>
+                  <div class="resource-body" id="{{ resource.uniqueId }}_{{ method.method }}_response_{{ response.code }}_body">
                   {% for b in response.body %}
                     <p><strong>Media type</strong>: {{ b.key }}</p>
 
