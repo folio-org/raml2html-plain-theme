@@ -1,0 +1,17 @@
+{% for method in resource.methods %}
+
+<li>
+  <a href="#{{ resource.uniqueId }}_{{ method.method }}">
+    {% if method.displayName %}
+    {{ method.displayName }}
+    {% else %}
+    {{ method.method | upper }}
+    {{ resource.parentUrl }}{{ resource.relativeUri }}
+    {% endif %}
+  </a>
+</li>
+{% endfor %}
+
+{% for resource in resource.resources %}
+  {% include "./toc.nunjucks" %}
+{% endfor %}

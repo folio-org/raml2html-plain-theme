@@ -60,6 +60,10 @@
     padding-left: 2em;
   }
 
+  ul ul {
+    padding-top: 0.5em;
+  }
+
   ul li {
     margin-bottom: 0.5em;
   }
@@ -144,6 +148,7 @@
     padding: 0 20px;
   }
 
+
   @media (min-width:768px) {
     .container {
       width: 750px;
@@ -181,23 +186,21 @@
       </ul>
 
       <h2>Table of contents</h2>
-      <!--
-      {% if documentation %}
-      <p>Documentations</p>
-      <ul>
+      <ul class="toc">
         {% for chapter in documentation %}
-          <li><a href="#{{ chapter.uniqueId }}">{{ chapter.title }}</a></li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-      <p>Resources</p>
-      -->
-      <ul>
-        {% for chapter in documentation %}
-        <li><a href="#{{ chapter.uniqueId }}">{{ chapter.title }}</a></li>
+        <li>
+            <a href="#{{ chapter.uniqueId }}">{{ chapter.title }}</a>
+        </li>
         {% endfor %}
         {% for resource in resources %}
-        <li><a href="#{{ resource.uniqueId}}">{% if resource.displayName %}{{ resource.displayName }}{% else %}{{ resource.relativeUri }}{% endif %}</a></li>
+          <li>
+            <a href="#{{ resource.uniqueId}}">
+              {% if resource.displayName %}{{ resource.displayName }}{% else %}{{ resource.relativeUri }}{% endif %}
+            </a>
+            <ul>
+              {% include "./toc.nunjucks" %}
+            </ul>
+          </li>
         {% endfor %}
       </ul>
 
