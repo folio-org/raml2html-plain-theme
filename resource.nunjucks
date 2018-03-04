@@ -70,9 +70,7 @@
 
         <!-- <h4>Request</h4> -->
 
-        <code>
-          <pre>{{ method.method | upper }} {{ resource.parentUrl }}{{ resource.relativeUri }}</pre>
-        </code>
+        <pre><code>{{ method.method | upper }} {{ resource.parentUrl }}{{ resource.relativeUri }}</code></pre>
 
         <!-- Tab panes -->
         

@@ -60,7 +60,7 @@
     padding-left: 2em;
   }
 
-  ul ul {
+  ul.toc ul {
     padding-top: 0.5em;
   }
 
@@ -136,8 +136,14 @@
     overflow: auto;
   }
 
+  pre code {
+    padding: 0;
+  }
+
   code {
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    padding: 0.2em;
+    background-color: #f8f8f8;
   }
 
   .container {
