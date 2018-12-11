@@ -125,7 +125,7 @@
     padding: 0.5em 2em;
     border: 1px solid #ddd;
     border-radius: 5px;
-    display: none;
+    /* display: none; */
   }
 
   pre {
